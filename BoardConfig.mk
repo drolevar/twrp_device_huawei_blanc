@@ -54,6 +54,15 @@ TARGET_COPY_OUT_VENDOR := vendor
 TARGET_COPY_OUT_ODM := odm
 TARGET_COPY_OUT_PRODUCT := product
 
+# Describe the measured read-only partitions even though their images are not built.
+BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := erofs
+BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := erofs
+BOARD_VENDORIMAGE_PARTITION_SIZE := 998244352
+BOARD_ODMIMAGE_FILE_SYSTEM_TYPE := erofs
+BOARD_ODMIMAGE_PARTITION_SIZE := 150994944
+BOARD_PRODUCTIMAGE_FILE_SYSTEM_TYPE := erofs
+BOARD_PRODUCTIMAGE_PARTITION_SIZE := 1736441856
+
 # These select recovery filesystem utilities, not the stock system's format.
 # The EROFS stock mounts and system-as-root paths are described by recovery.fstab.
 TARGET_USERIMAGES_USE_EXT4 := true
