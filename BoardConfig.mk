@@ -49,6 +49,11 @@ BOARD_USERDATAIMAGE_PARTITION_SIZE := 119663493120
 BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE := f2fs
 BOARD_USES_FULL_RECOVERY_IMAGE := true
 
+# Stock .342 has separate vendor, ODM and product partitions.
+TARGET_COPY_OUT_VENDOR := vendor
+TARGET_COPY_OUT_ODM := odm
+TARGET_COPY_OUT_PRODUCT := product
+
 # These select recovery filesystem utilities, not the stock system's format.
 # The EROFS stock mounts and system-as-root paths are described by recovery.fstab.
 TARGET_USERIMAGES_USE_EXT4 := true
