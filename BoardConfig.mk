@@ -69,6 +69,18 @@ TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
 TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery.fstab
 
+# The measured host artifact omitted these DT_NEEDED libraries from the ramdisk.
+# Use TWRP's explicit relink hook; required-module names are derived upstream.
+# These are loader dependencies of shipped binaries, not an FBE support claim.
+TW_RECOVERY_ADDITIONAL_RELINK_LIBRARY_FILES += \
+    $(TARGET_OUT_SHARED_LIBRARIES)/libboot_control_client.so \
+    $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.boot-V1-ndk.so \
+    $(TARGET_OUT_SHARED_LIBRARIES)/android.system.keystore2-V4-ndk.so \
+    $(TARGET_OUT_SHARED_LIBRARIES)/android.security.apc-ndk.so \
+    $(TARGET_OUT_SHARED_LIBRARIES)/libkeymint_support.so \
+    $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.security.keymint-V3-ndk.so \
+    $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.security.secureclock-V1-ndk.so
+
 # Only the reviewed modern overlay is copied into the ramdisk. The historical
 # recovery/root directory contains unreviewed sepolicy/TEE binaries.
 TARGET_RECOVERY_DEVICE_DIRS := $(DEVICE_PATH)/recovery-modern
