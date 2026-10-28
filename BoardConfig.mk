@@ -72,7 +72,7 @@ TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery.fstab
 # Only the reviewed modern overlay is copied into the ramdisk. The historical
 # recovery/root directory contains unreviewed sepolicy/TEE binaries.
 TARGET_RECOVERY_DEVICE_DIRS := $(DEVICE_PATH)/recovery-modern
-TARGET_RECOVERY_INITRC := $(DEVICE_PATH)/recovery-modern/init.rc
+# The curated overlay supplies system/etc/init/hw/init.rc directly.
 
 TW_THEME := portrait_hdpi
 RECOVERY_SDCARD_ON_DATA := true
