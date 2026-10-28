@@ -15,4 +15,7 @@
 #
 
 PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/omni_blanc.mk
+    $(LOCAL_DIR)/twrp_blanc.mk
+
+COMMON_LUNCH_CHOICES := \
+    twrp_blanc-ap2a-eng

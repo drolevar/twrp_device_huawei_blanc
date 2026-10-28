@@ -1,0 +1,20 @@
+# BLA-L29 recovery-only setup. No TEE or stock storage mounts are started here.
+on init
+    exec_start blanc_usb_setup
+
+on early-fs
+    exec_start blanc_fixlinks
+
+service blanc_usb_setup /system/bin/sh /sbin/blanc-usb-setup.sh
+    user root
+    group root
+    disabled
+    oneshot
+    seclabel u:r:recovery:s0
+
+service blanc_fixlinks /system/bin/sh /sbin/fixlinks.sh
+    user root
+    group root
+    disabled
+    oneshot
+    seclabel u:r:recovery:s0
