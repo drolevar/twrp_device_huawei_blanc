@@ -1,0 +1,4 @@
+recovery_only(`
+  allow recovery { rootfs tmpfs }:fifo_file create_file_perms;
+  set_prop(adbd, powerctl_prop)
+')

@@ -11,6 +11,13 @@ define BOARD_RECOVERY_IMAGE_PREPARE
     if [ -L "$(TARGET_RECOVERY_ROOT_OUT)/system/bin/modprobe" ]; then \
         rm -f "$(TARGET_RECOVERY_ROOT_OUT)/system/bin/modprobe"; \
     fi; \
+    mkdir -p \
+        "$(TARGET_RECOVERY_ROOT_OUT)/cache" \
+        "$(TARGET_RECOVERY_ROOT_OUT)/cust" \
+        "$(TARGET_RECOVERY_ROOT_OUT)/preas" \
+        "$(TARGET_RECOVERY_ROOT_OUT)/preavs" \
+        "$(TARGET_RECOVERY_ROOT_OUT)/system_root"; \
+    ln -sf /tmp/fstab "$(TARGET_RECOVERY_ROOT_OUT)/system/etc/fstab"; \
     cd "$(TARGET_RECOVERY_ROOT_OUT)" && \
     find . -print | LC_ALL=C sort | sed 's|^\./||; /lib\/modules\//d' > ramdisk-files.txt && \
     find . -type f ! -path './ramdisk-files.sha256sum' ! -path '*/lib/modules/*' ! -name 'prop.default' -print0 | LC_ALL=C sort -z | xargs -0 -r sha256sum > ramdisk-files.sha256sum

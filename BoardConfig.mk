@@ -84,15 +84,26 @@ TW_RECOVERY_ADDITIONAL_RELINK_LIBRARY_FILES += \
 # Only the reviewed modern overlay is copied into the ramdisk. The historical
 # recovery/root directory contains unreviewed sepolicy/TEE binaries.
 TARGET_RECOVERY_DEVICE_DIRS := $(DEVICE_PATH)/recovery-modern
+
+# Label the measured backlight, battery, and thermal sysfs nodes with existing public types.
+BOARD_VENDOR_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy
 # The curated overlay supplies system/etc/init/hw/init.rc directly.
 
 TW_THEME := portrait_hdpi
-RECOVERY_SDCARD_ON_DATA := true
+
+# Use linked assembly/C rendering instead of an executable pixelflinger cache.
+TW_DISABLE_PIXELFLINGER_JIT := true
+SOONG_CONFIG_NAMESPACES += twrpPixelflinger
+SOONG_CONFIG_twrpPixelflinger += disable_jit
+SOONG_CONFIG_twrpPixelflinger_disable_jit := $(TW_DISABLE_PIXELFLINGER_JIT)
+TW_SKIP_ADDITIONAL_FSTAB := true
 TW_EXCLUDE_DEFAULT_USB_INIT := true
 TW_BRIGHTNESS_PATH := /sys/class/leds/lcd_backlight0/brightness
 TW_MAX_BRIGHTNESS := 1023
 TW_DEFAULT_BRIGHTNESS := 512
 TW_NO_SCREEN_BLANK := true
+TW_NO_HAPTICS := true
+TW_USE_LEGACY_BATTERY_SERVICES := true
 TW_CUSTOM_BATTERY_PATH := /sys/class/power_supply/Battery
 
 # Initial scope retains the original MTP exclusion and has no Huawei FBE claim.

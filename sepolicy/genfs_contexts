@@ -1,0 +1,6 @@
+# /sys/class/leds/lcd_backlight0, /sys/class/power_supply/Battery, and
+# /sys/class/thermal/thermal_zone0 resolve below these measured sysfs paths.
+genfscon sysfs /devices/platform/hisi_fb.1048577/leds/lcd_backlight0 u:object_r:sysfs_leds:s0
+genfscon sysfs /devices/platform/battery/power_supply/Battery/capacity u:object_r:sysfs_batteryinfo:s0
+genfscon sysfs /devices/platform/battery/power_supply/Battery/status u:object_r:sysfs_batteryinfo:s0
+genfscon sysfs /devices/virtual/thermal/thermal_zone0 u:object_r:sysfs_thermal:s0
