@@ -14,11 +14,18 @@ define BOARD_RECOVERY_IMAGE_PREPARE
     if [ -f "$(TARGET_OUT_SHARED_LIBRARIES)/libminuitwrp.so" ]; then \
         cp -f "$(TARGET_OUT_SHARED_LIBRARIES)/libminuitwrp.so" "$(TARGET_RECOVERY_ROOT_OUT)/system/lib64/libminuitwrp.so"; \
     fi; \
+    if [ -f "$(TARGET_OUT_SHARED_LIBRARIES)/libbootloader_message.so" ]; then \
+        cp -f "$(TARGET_OUT_SHARED_LIBRARIES)/libbootloader_message.so" "$(TARGET_RECOVERY_ROOT_OUT)/system/lib64/libbootloader_message.so"; \
+    fi; \
     mkdir -p \
         "$(TARGET_RECOVERY_ROOT_OUT)/cache" \
         "$(TARGET_RECOVERY_ROOT_OUT)/cust" \
+        "$(TARGET_RECOVERY_ROOT_OUT)/hw_product" \
         "$(TARGET_RECOVERY_ROOT_OUT)/preas" \
         "$(TARGET_RECOVERY_ROOT_OUT)/preavs" \
+        "$(TARGET_RECOVERY_ROOT_OUT)/prets" \
+        "$(TARGET_RECOVERY_ROOT_OUT)/pretvs" \
+        "$(TARGET_RECOVERY_ROOT_OUT)/system_ext" \
         "$(TARGET_RECOVERY_ROOT_OUT)/system_root"; \
     ln -sf /tmp/fstab "$(TARGET_RECOVERY_ROOT_OUT)/system/etc/fstab"; \
     cd "$(TARGET_RECOVERY_ROOT_OUT)" && \

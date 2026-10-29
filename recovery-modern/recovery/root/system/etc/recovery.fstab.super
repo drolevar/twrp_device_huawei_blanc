@@ -1,0 +1,44 @@
+# BLA-L29, EMUI 10/12 (10.0.0.202 / 102.0.0.225) & LineageOS 24 dynamic-partition layout.
+# Auto-selected by twrp.cpp when /dev/block/bootdevice/by-name/super (or /dev/block/by-name/super)
+# is present; EMUI 9.1.0.342 (static partitions) continues to use /etc/recovery.fstab.
+# Logical partitions inside super (LBA 602112-2011135, 5,504 MiB) are mapped via liblp;
+# Check_FS_Type() (libblkid) probes each mapped volume so both stock EROFS and custom EXT4 mount cleanly.
+
+/system_root       erofs     system                                             flags=display="System";logical;fsflags=ro;backup=0;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/system_ext        erofs     system_ext                                         flags=display="System_EXT";logical;fsflags=ro;backup=0;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/vendor            erofs     vendor                                             flags=display="Vendor";logical;fsflags=ro;backup=0;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/product           erofs     product                                            flags=display="Product";logical;fsflags=ro;backup=0;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/odm               erofs     odm                                                flags=display="ODM";logical;fsflags=ro;backup=0;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/hw_product        erofs     hw_product                                         flags=display="HW Product";logical;fsflags=ro;backup=0;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/cust              erofs     cust                                               flags=display="Cust";logical;fsflags=ro;backup=0;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+
+# Physical read-only preload/metadata EROFS partitions in the EMUI 10/12 GPT (121-partition layout).
+/preas             erofs     /dev/block/bootdevice/by-name/preas                flags=display="Preas";fsflags=ro;backup=0;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/preavs            erofs     /dev/block/bootdevice/by-name/preavs               flags=display="Preavs";fsflags=ro;backup=0;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/prets             erofs     /dev/block/bootdevice/by-name/prets                flags=display="Prets";fsflags=ro;backup=0;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/pretvs            erofs     /dev/block/bootdevice/by-name/pretvs               flags=display="Pretvs";fsflags=ro;backup=0;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+
+# F2FS userdata; Huawei FBE decryption is not implemented by this entry.
+/data              f2fs      /dev/block/bootdevice/by-name/userdata             flags=display="Data (FBE untested)";fsflags=ro,norecovery;backup=0;flashimg=0;storage=0;settingsstorage=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+
+# Cache is EXT4. Keep persistent logs/settings read-only with noload fallback.
+/cache             ext4      /dev/block/bootdevice/by-name/cache                flags=display="Cache";fsflags=ro,noload;backup=0;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+
+# Raw-image backup entries for the EMUI 10/12 boot chain, split AVB descriptors, and preload partitions.
+# Note: /super raw image backup is added automatically by TWPartitionManager::Setup_Super_Partition().
+/kernel            emmc      /dev/block/bootdevice/by-name/kernel               flags=display="Kernel Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/ramdisk           emmc      /dev/block/bootdevice/by-name/ramdisk              flags=display="Boot Ramdisk Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/recovery_ramdisk  emmc      /dev/block/bootdevice/by-name/recovery_ramdisk     flags=display="Recovery Ramdisk Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/recovery_vendor   emmc      /dev/block/bootdevice/by-name/recovery_vendor      flags=display="Recovery Vendor Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/dts               emmc      /dev/block/bootdevice/by-name/dts                  flags=display="DTS Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/dto               emmc      /dev/block/bootdevice/by-name/dto                  flags=display="DTO Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/vbmeta            emmc      /dev/block/bootdevice/by-name/vbmeta               flags=display="VBMeta Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/vbmeta_system     emmc      /dev/block/bootdevice/by-name/vbmeta_system        flags=display="VBMeta System Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/vbmeta_vendor     emmc      /dev/block/bootdevice/by-name/vbmeta_vendor        flags=display="VBMeta Vendor Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/vbmeta_odm        emmc      /dev/block/bootdevice/by-name/vbmeta_odm           flags=display="VBMeta ODM Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/vbmeta_cust       emmc      /dev/block/bootdevice/by-name/vbmeta_cust          flags=display="VBMeta Cust Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/vbmeta_hw_product emmc      /dev/block/bootdevice/by-name/vbmeta_hw_product    flags=display="VBMeta HW Product Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/preas_image       emmc      /dev/block/bootdevice/by-name/preas                flags=display="Preas Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/preavs_image      emmc      /dev/block/bootdevice/by-name/preavs               flags=display="Preavs Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/prets_image       emmc      /dev/block/bootdevice/by-name/prets                flags=display="Prets Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/pretvs_image      emmc      /dev/block/bootdevice/by-name/pretvs               flags=display="Pretvs Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0

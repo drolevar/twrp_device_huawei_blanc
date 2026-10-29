@@ -1,4 +1,6 @@
 recovery_only(`
   allow recovery { rootfs tmpfs }:fifo_file create_file_perms;
+  allow recovery block_device:dir rw_dir_perms;
+  allow recovery block_device:lnk_file create_file_perms;
   set_prop(adbd, powerctl_prop)
 ')

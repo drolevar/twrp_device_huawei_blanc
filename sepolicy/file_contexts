@@ -1,0 +1,7 @@
+# UFS block-device partition labels for BLA-L29 (EMUI 9.1 .342 and EMUI 10/12 super layouts)
+/dev/block/platform/ff3c0000\.ufs/by-name/misc                 u:object_r:misc_block_device:s0
+/dev/block/platform/ff3c0000\.ufs/by-name/super                u:object_r:super_block_device:s0
+/dev/block/platform/ff3c0000\.ufs/by-name/userdata             u:object_r:userdata_block_device:s0
+/dev/block/platform/ff3c0000\.ufs/by-name/cache                u:object_r:cache_block_device:s0
+/dev/block/platform/ff3c0000\.ufs/by-name/recovery_ramdisk(_a)? u:object_r:recovery_block_device:s0
+/dev/block/platform/ff3c0000\.ufs/by-name/system(_a)?          u:object_r:system_block_device:s0
