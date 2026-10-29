@@ -42,3 +42,9 @@ service teecd /system/bin/true
     disabled
     oneshot
     seclabel u:r:recovery:s0
+
+# Curated /system/etc/init/hw/init.rc omits the standard sys.powerctl handler;
+# required for `adb reboot ...` (adbd) and TWRP GUI reboot actions (TWFunc::tw_reboot).
+on property:sys.powerctl=*
+    powerctl ${sys.powerctl}
+
