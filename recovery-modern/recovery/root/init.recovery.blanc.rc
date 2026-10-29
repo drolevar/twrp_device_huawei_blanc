@@ -6,27 +6,6 @@ on early-fs
     symlink /dev/block/platform/ff3c0000.ufs /dev/block/bootdevice
     exec_start blanc_fixlinks
 
-on boot
-    write /sys/devices/system/cpu/cpufreq/policy0/scaling_governor interactive
-    write /sys/devices/system/cpu/cpufreq/policy0/interactive/go_hispeed_load 80
-    write /sys/devices/system/cpu/cpufreq/policy4/scaling_governor interactive
-    write /sys/devices/system/cpu/cpufreq/policy4/interactive/hispeed_freq 1863000
-    write /sys/devices/system/cpu/cpufreq/policy4/interactive/go_hispeed_load 80
-    write /sys/devices/system/cpu/cpufreq/policy4/interactive/target_loads 80
-    write /sys/devices/system/cpu/cpufreq/policy4/interactive/timer_rate 20000
-
-# Stock /vendor/etc/init/init.recovery.huawei.rc resets cpu4 to ondemand on boot;
-# re-assert interactive on policy4 once USB/ADB config activates after boot.
-on property:sys.usb.config=adb
-    write /sys/devices/system/cpu/cpufreq/policy4/scaling_governor interactive
-    write /sys/devices/system/cpu/cpufreq/policy4/interactive/hispeed_freq 1863000
-    write /sys/devices/system/cpu/cpufreq/policy4/interactive/go_hispeed_load 80
-    write /sys/devices/system/cpu/cpufreq/policy4/interactive/target_loads 80
-    write /sys/devices/system/cpu/cpufreq/policy4/interactive/timer_rate 20000
-
-on property:sys.powerctl=*
-    powerctl ${sys.powerctl}
-
 service blanc_usb_setup /system/bin/sh /sbin/blanc-usb-setup.sh
     user root
     group root
@@ -41,9 +20,19 @@ service blanc_fixlinks /system/bin/sh /sbin/fixlinks.sh
     oneshot
     seclabel u:r:recovery:s0
 
-# Guard against stock /vendor/etc/init/init.recovery.huawei.rc critical vendor
-# services (oeminfo_nvm is marked critical in recovery_vendor and triggers a
-# 4-crash fatal reboot into fastboot after ~47.7s when left unguarded).
+# Vendor-service guards:
+# LoadBootScripts() in system/core/init/init.cpp parses /system/etc/init/hw/init.rc
+# (and its static `import /init.recovery.blanc.rc`) before /vendor/etc/init.
+# ServiceParser::EndSection() in system/core/init/service_parser.cpp ignores any
+# later duplicate service definition that lacks `override`.
+# Defining oeminfo_nvm and teecd here as disabled oneshot no-ops prevents
+# /vendor/etc/init/init.recovery.huawei.rc and
+# /vendor/etc/init/manufacture/init.recovery.manufacture.rc from registering:
+#   - oeminfo_nvm (marked `critical` in recovery_vendor; crashes 4 times in ~47.7s
+#     and triggers a fatal reboot to bootloader when started without stock state)
+#   - teecd (Huawei TrustZone TEE daemon)
+# Consequence: OEMINFO RPC and TrustZone TEE remain inactive in recovery, and
+# file-based encryption (FBE) decryption of /data is NOT supported or claimed.
 service oeminfo_nvm /system/bin/true
     disabled
     oneshot
