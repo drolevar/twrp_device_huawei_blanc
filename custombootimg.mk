@@ -11,6 +11,9 @@ define BOARD_RECOVERY_IMAGE_PREPARE
     if [ -L "$(TARGET_RECOVERY_ROOT_OUT)/system/bin/modprobe" ]; then \
         rm -f "$(TARGET_RECOVERY_ROOT_OUT)/system/bin/modprobe"; \
     fi; \
+    if [ -f "$(TARGET_OUT_SHARED_LIBRARIES)/libminuitwrp.so" ]; then \
+        cp -f "$(TARGET_OUT_SHARED_LIBRARIES)/libminuitwrp.so" "$(TARGET_RECOVERY_ROOT_OUT)/system/lib64/libminuitwrp.so"; \
+    fi; \
     mkdir -p \
         "$(TARGET_RECOVERY_ROOT_OUT)/cache" \
         "$(TARGET_RECOVERY_ROOT_OUT)/cust" \
