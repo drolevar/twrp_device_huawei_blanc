@@ -35,6 +35,14 @@ on property:sys.usb.config=adb && property:sys.usb.configfs=1
     # re-enable Microsoft OS descriptors (WINUSB compatible ID from adbd) while
     # the gadget is unbound, as the working TWRP 3.3.1 gadget setup does.
     write /config/usb_gadget/g1/os_desc/use 1
+    # The `on fs && sys.usb.configfs=1` actions (here and in the AOSP init.rc)
+    # never fire because sys.usb.configfs is still 0 at `fs`, which left the
+    # gadget without iManufacturer/iProduct (host sysfs has no product file;
+    # Windows: Code 43 "invalid product description string descriptor").
+    # Write them here, while the gadget is unbound.
+    mkdir /config/usb_gadget/g1/strings/0x409
+    write /config/usb_gadget/g1/strings/0x409/manufacturer ${ro.product.manufacturer}
+    write /config/usb_gadget/g1/strings/0x409/product ${ro.product.model}
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration adb
     start adbd
 
