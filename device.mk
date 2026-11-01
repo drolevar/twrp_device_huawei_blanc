@@ -23,3 +23,15 @@ PRODUCT_BUILD_VBMETA_IMAGE := false
 PRODUCT_BUILD_SUPER_EMPTY_IMAGE := false
 PRODUCT_BUILD_GENERIC_OTA_PACKAGE := false
 PRODUCT_USE_DYNAMIC_PARTITIONS := false
+
+# USB identity. The curated AOSP recovery init.rc (recovery-modern/.../init.rc)
+# binds the gadget and writes idProduct from ro.recovery.usb.adb.pid *before*
+# init.recovery.usb.rc and the vendor init.hisi.usb.rc actions for the same
+# trigger run, so these defaults decide the identity the host enumerates.
+# Use the Huawei ADB identity enumerated by the working TWRP 3.3.1 (12d1:103a).
+# The AOSP default PID D001 produced a mixed 12d1:d001 identity on the hardened
+# image; the Windows ADB failure with it is attributed to this mismatch
+# (hypothesis, untested on Windows). Linux does not depend on the identity.
+PRODUCT_VENDOR_PROPERTIES += \
+    ro.recovery.usb.vid=12D1 \
+    ro.recovery.usb.adb.pid=103A

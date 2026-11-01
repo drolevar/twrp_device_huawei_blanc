@@ -31,6 +31,10 @@ on property:sys.usb.config=none && property:sys.usb.configfs=1
 
 on property:sys.usb.config=adb && property:sys.usb.configfs=1
     write /config/usb_gadget/g1/UDC none
+    # The vendor init.hisi.usb.rc writes os_desc/use 0 on sys.usb.config=none;
+    # re-enable Microsoft OS descriptors (WINUSB compatible ID from adbd) while
+    # the gadget is unbound, as the working TWRP 3.3.1 gadget setup does.
+    write /config/usb_gadget/g1/os_desc/use 1
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration adb
     start adbd
 
