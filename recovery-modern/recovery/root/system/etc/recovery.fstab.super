@@ -21,13 +21,16 @@
 # F2FS userdata; Huawei FBE decryption is not implemented by this entry.
 /data              f2fs      /dev/block/bootdevice/by-name/userdata             flags=display="Data (FBE untested)";fsflags=ro,norecovery;backup=0;flashimg=0;storage=0;settingsstorage=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
 
-# Cache is EXT4. Keep persistent logs/settings read-only with noload fallback.
-/cache             ext4      /dev/block/bootdevice/by-name/cache                flags=display="Cache";fsflags=ro,noload;backup=0;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+# Physical cache partition (sdd65, 128 MiB) backs /metadata on LineageOS 24 (and /cache on stock EMUI 12).
+# Keep read-only with noload and all wipe guards enabled so factory reset / GUI wipe cannot destroy FBE metadata keys.
+/metadata          ext4      /dev/block/bootdevice/by-name/cache                flags=display="Metadata (sdd65/cache)";fsflags=ro,noload;backup=0;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
 
 # Raw-image backup entries for the EMUI 10/12 boot chain, split AVB descriptors, and preload partitions.
 # Note: /super raw image backup is added automatically by TWPartitionManager::Setup_Super_Partition().
 /kernel            emmc      /dev/block/bootdevice/by-name/kernel               flags=display="Kernel Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
 /ramdisk           emmc      /dev/block/bootdevice/by-name/ramdisk              flags=display="Boot Ramdisk Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/cache_image       emmc      /dev/block/bootdevice/by-name/cache                flags=display="Cache / Metadata Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/patch_image       emmc      /dev/block/bootdevice/by-name/patch                flags=display="Patch Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
 /recovery_ramdisk  emmc      /dev/block/bootdevice/by-name/recovery_ramdisk     flags=display="Recovery Ramdisk Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
 /recovery_vendor   emmc      /dev/block/bootdevice/by-name/recovery_vendor      flags=display="Recovery Vendor Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
 /dts               emmc      /dev/block/bootdevice/by-name/dts                  flags=display="DTS Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
