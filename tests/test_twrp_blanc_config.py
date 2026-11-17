@@ -64,6 +64,10 @@ class TwrpBlancConfigTest(unittest.TestCase):
         ]
         for fstab_path, expected_flashimg in configs:
             v1_rows, v2_rows = _parse_fstab(fstab_path)
+            by_mp = {row["mount_point"]: row for row in v1_rows}
+            if fstab_path.name == "recovery.fstab.super":
+                self.assertEqual(by_mp["/kernel"]["blk_device"], "/dev/block/by-name/kernel")
+                self.assertEqual(by_mp["/ramdisk"]["blk_device"], "/dev/block/by-name/ramdisk")
             flash_targets = {row["mount_point"] for row in v1_rows if "flashimg=1" in row["flags"]}
             self.assertEqual(flash_targets, expected_flashimg, fstab_path.name)
 
@@ -136,9 +140,43 @@ class TwrpBlancConfigTest(unittest.TestCase):
         self.assertLess(customboot.index("bootstrap/linker64"), customboot.index("ramdisk-files.txt"))
         self.assertLess(customboot.index("system/bin/blanc-diag-dump.sh"), customboot.index("ramdisk-files.txt"))
 
+        self.assertLess(
+            init_rc.index("start servicemanager"),
+            init_rc.index("on boot"),
+        )
+        sm_block = re.search(
+            r"^service servicemanager /system/bin/servicemanager\n(?:    .+\n)+",
+            init_rc,
+            re.MULTILINE,
+        )
+        self.assertIsNotNone(sm_block, "Missing servicemanager service definition in init.rc")
+        sm_text = sm_block.group(0)
+        for expected in (
+            "user system",
+            "group system readproc",
+            "disabled",
+            "file /dev/kmsg w",
+            "onrestart setprop servicemanager.ready false",
+            "seclabel u:r:servicemanager:s0",
+        ):
+            self.assertIn(expected, sm_text)
+
+        fb_block = re.search(
+            r"^service fastbootd /system/bin/fastbootd\n(?:    .+\n)+",
+            init_rc,
+            re.MULTILINE,
+        )
+        self.assertIsNotNone(fb_block, "Missing fastbootd service definition in init.rc")
+        self.assertIn("group system shell", fb_block.group(0))
+        self.assertIn("seclabel u:r:fastbootd:s0", fb_block.group(0))
+
+        fs_idx = init_rc.index("\non fs\n")
         ffs_mkdir_idx = init_rc.index("mkdir /config/usb_gadget/g1/functions/ffs.fastboot")
+        ffs_chmod_idx = init_rc.index("chmod 0755 /dev/usb-ffs", fs_idx)
         ffs_mount_idx = init_rc.index("mount functionfs fastboot /dev/usb-ffs/fastboot")
+        self.assertLess(fs_idx, ffs_chmod_idx)
         self.assertLess(ffs_mkdir_idx, ffs_mount_idx)
+        self.assertLess(ffs_chmod_idx, ffs_mount_idx)
         self.assertIn("write /sys/devices/virtual/android_usb/android0/port_mode 2", init_rc)
 
         self.assertIn("0x103a", usb_rc)
@@ -147,6 +185,12 @@ class TwrpBlancConfigTest(unittest.TestCase):
         self.assertIn("start fastbootd", usb_rc)
         self.assertIn("ffs.fastboot", usb_rc)
         self.assertIn("os_desc/use 1", usb_rc)
+        usb_fs_idx = usb_rc.index("on fs\n")
+        usb_fs_configfs_idx = usb_rc.index("on fs && property:sys.usb.configfs=1")
+        self.assertIn("chmod 0755 /dev/usb-ffs", usb_rc[usb_fs_idx:usb_fs_configfs_idx])
+        usb_fb_idx = usb_rc.index("on property:sys.usb.config=fastboot && property:sys.usb.configfs=1")
+        usb_fb_end_idx = usb_rc.index("start fastbootd", usb_fb_idx)
+        self.assertIn("chmod 0755 /dev/usb-ffs", usb_rc[usb_fb_idx:usb_fb_end_idx])
 
         self.assertIn("service oeminfo_nvm /system/bin/true", blanc_rc)
         self.assertIn("service teecd /system/bin/true", blanc_rc)
@@ -171,6 +215,7 @@ class TwrpBlancConfigTest(unittest.TestCase):
             "modemnvm",
         ):
             self.assertNotIn(forbidden, fc)
+        self.assertIn("allow init boot_block_device:{ blk_file lnk_file } relabelto;", recovery_te)
         self.assertNotIn("pstorefs", recovery_te)
 
     def test_shell_scripts_and_diag_dump_archive(self) -> None:

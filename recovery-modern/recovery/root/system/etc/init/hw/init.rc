@@ -72,6 +72,10 @@ on init
     # checker programs.
     mkdir /dev/fscklogs 0770 root system
 
+    # Start Binder context manager so Android 14 fastbootd's AServiceManager_isDeclared()
+    # probes resolve immediately rather than blocking on servicemanager.ready.
+    start servicemanager
+
 on boot
     ifup lo
     hostname localhost
@@ -120,9 +124,17 @@ on property:ro.debuggable=1
 on fs && property:ro.debuggable=1
     setprop sys.usb.config adb
 
+service servicemanager /system/bin/servicemanager
+    user system
+    group system readproc
+    disabled
+    file /dev/kmsg w
+    onrestart setprop servicemanager.ready false
+    seclabel u:r:servicemanager:s0
+
 service fastbootd /system/bin/fastbootd
     disabled
-    group system
+    group system shell
     seclabel u:r:fastbootd:s0
 
 # Restart adbd so it can run as root
@@ -158,7 +170,8 @@ on fs
     mkdir /config/usb_gadget/g1
     mkdir /config/usb_gadget/g1/functions/ffs.adb
     mkdir /config/usb_gadget/g1/functions/ffs.fastboot
-    mkdir /dev/usb-ffs 0770 shell shell
+    mkdir /dev/usb-ffs 0755 shell shell
+    chmod 0755 /dev/usb-ffs
     mkdir /dev/usb-ffs/adb 0770 shell shell
     mount functionfs adb /dev/usb-ffs/adb uid=2000,gid=2000
     mkdir /dev/usb-ffs/fastboot 0770 system system

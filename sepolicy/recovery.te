@@ -1,4 +1,5 @@
 recovery_only(`
+  allow init boot_block_device:{ blk_file lnk_file } relabelto;
   allow recovery { rootfs tmpfs }:fifo_file create_file_perms;
   allow recovery block_device:dir rw_dir_perms;
   allow recovery block_device:lnk_file create_file_perms;

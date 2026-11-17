@@ -28,8 +28,8 @@
 # Raw-image entries for the EMUI 10/12 boot chain, split AVB descriptors, and preload partitions.
 # Only kernel, ramdisk, and recovery_ramdisk enable size-checked raw image flashing (flashimg=1).
 # Note: /super raw image backup is added automatically by TWPartitionManager::Setup_Super_Partition().
-/kernel            emmc      /dev/block/bootdevice/by-name/kernel               flags=display="Kernel Image";backup=1;flashimg=1;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
-/ramdisk           emmc      /dev/block/bootdevice/by-name/ramdisk              flags=display="Boot Ramdisk Image";backup=1;flashimg=1;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/kernel            emmc      /dev/block/by-name/kernel               flags=display="Kernel Image";backup=1;flashimg=1;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/ramdisk           emmc      /dev/block/by-name/ramdisk              flags=display="Boot Ramdisk Image";backup=1;flashimg=1;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
 /cache_image       emmc      /dev/block/bootdevice/by-name/cache                flags=display="Cache / Metadata Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
 /patch_image       emmc      /dev/block/bootdevice/by-name/patch                flags=display="Patch Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
 /recovery_ramdisk  emmc      /dev/block/bootdevice/by-name/recovery_ramdisk     flags=display="Recovery Ramdisk Image";backup=1;flashimg=1;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
