@@ -72,9 +72,16 @@ TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery.fstab
 # The measured host artifact omitted these DT_NEEDED libraries from the ramdisk.
 # Use TWRP's explicit relink hook; required-module names are derived upstream.
 # These are loader dependencies of shipped binaries, not an FBE support claim.
+TW_RECOVERY_ADDITIONAL_RELINK_BINARY_FILES += \
+    $(TARGET_OUT_EXECUTABLES)/lptools
+
 TW_RECOVERY_ADDITIONAL_RELINK_LIBRARY_FILES += \
     $(TARGET_OUT_SHARED_LIBRARIES)/libboot_control_client.so \
     $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.boot-V1-ndk.so \
+    $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.fastboot@1.1.so \
+    $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.fastboot-V1-ndk.so \
+    $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.health@2.0.so \
+    $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.health-V3-ndk.so \
     $(TARGET_OUT_SHARED_LIBRARIES)/android.system.keystore2-V4-ndk.so \
     $(TARGET_OUT_SHARED_LIBRARIES)/android.security.apc-ndk.so \
     $(TARGET_OUT_SHARED_LIBRARIES)/libkeymint_support.so \
@@ -108,6 +115,8 @@ TW_CUSTOM_BATTERY_PATH := /sys/class/power_supply/Battery
 
 # Initial scope retains the original MTP exclusion and has no Huawei FBE claim.
 # Leave TW_INCLUDE_CRYPTO unset: 'false' is nonempty in several upstream tests.
+# TW_NO_USB_STORAGE disables legacy UMS only and does not block external /usb_otg.
+TW_INCLUDE_FASTBOOTD := true
 TW_EXCLUDE_MTP := true
 TW_NO_USB_STORAGE := true
 

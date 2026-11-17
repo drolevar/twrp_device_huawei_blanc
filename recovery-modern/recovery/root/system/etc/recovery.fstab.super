@@ -25,13 +25,14 @@
 # Keep read-only with noload and all wipe guards enabled so factory reset / GUI wipe cannot destroy FBE metadata keys.
 /metadata          ext4      /dev/block/bootdevice/by-name/cache                flags=display="Metadata (sdd65/cache)";fsflags=ro,noload;backup=0;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
 
-# Raw-image backup entries for the EMUI 10/12 boot chain, split AVB descriptors, and preload partitions.
+# Raw-image entries for the EMUI 10/12 boot chain, split AVB descriptors, and preload partitions.
+# Only kernel, ramdisk, and recovery_ramdisk enable size-checked raw image flashing (flashimg=1).
 # Note: /super raw image backup is added automatically by TWPartitionManager::Setup_Super_Partition().
-/kernel            emmc      /dev/block/bootdevice/by-name/kernel               flags=display="Kernel Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
-/ramdisk           emmc      /dev/block/bootdevice/by-name/ramdisk              flags=display="Boot Ramdisk Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/kernel            emmc      /dev/block/bootdevice/by-name/kernel               flags=display="Kernel Image";backup=1;flashimg=1;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/ramdisk           emmc      /dev/block/bootdevice/by-name/ramdisk              flags=display="Boot Ramdisk Image";backup=1;flashimg=1;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
 /cache_image       emmc      /dev/block/bootdevice/by-name/cache                flags=display="Cache / Metadata Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
 /patch_image       emmc      /dev/block/bootdevice/by-name/patch                flags=display="Patch Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
-/recovery_ramdisk  emmc      /dev/block/bootdevice/by-name/recovery_ramdisk     flags=display="Recovery Ramdisk Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+/recovery_ramdisk  emmc      /dev/block/bootdevice/by-name/recovery_ramdisk     flags=display="Recovery Ramdisk Image";backup=1;flashimg=1;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
 /recovery_vendor   emmc      /dev/block/bootdevice/by-name/recovery_vendor      flags=display="Recovery Vendor Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
 /dts               emmc      /dev/block/bootdevice/by-name/dts                  flags=display="DTS Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
 /dto               emmc      /dev/block/bootdevice/by-name/dto                  flags=display="DTO Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
@@ -45,3 +46,8 @@
 /preavs_image      emmc      /dev/block/bootdevice/by-name/preavs               flags=display="Preavs Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
 /prets_image       emmc      /dev/block/bootdevice/by-name/prets                flags=display="Prets Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
 /pretvs_image      emmc      /dev/block/bootdevice/by-name/pretvs               flags=display="Pretvs Image";fsflags=ro;backup=1;flashimg=0;wipeingui=0;wipeduringfactoryreset=0;canbewiped=0
+
+# External-only USB-OTG host storage (fstab v2 syntax with distinct mount points).
+/devices/platform/hisi_usb@ff200000/ff100000.dwc3/*  /usb_otg       auto  defaults  display="USB-OTG",storage,wipeingui,removable,backup=0
+/devices/hisi_usb@ff200000/ff100000.dwc3/*           /usb_otg_hisi  auto  defaults  display="USB-OTG (HiSi)",storage,wipeingui,removable,backup=0
+/devices/platform/e7f00000.hifi_usb/*               /usb_otg_hifi  auto  defaults  display="USB-OTG (HiFi)",storage,wipeingui,removable,backup=0

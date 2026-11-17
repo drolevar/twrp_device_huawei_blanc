@@ -34,4 +34,9 @@ PRODUCT_USE_DYNAMIC_PARTITIONS := false
 # (hypothesis, untested on Windows). Linux does not depend on the identity.
 PRODUCT_VENDOR_PROPERTIES += \
     ro.recovery.usb.vid=12D1 \
-    ro.recovery.usb.adb.pid=103A
+    ro.recovery.usb.adb.pid=103A \
+    ro.recovery.usb.fastboot.pid=1057
+
+PRODUCT_PACKAGES += \
+    fastbootd \
+    lptools

@@ -26,7 +26,17 @@ define BOARD_RECOVERY_IMAGE_PREPARE
         "$(TARGET_RECOVERY_ROOT_OUT)/prets" \
         "$(TARGET_RECOVERY_ROOT_OUT)/pretvs" \
         "$(TARGET_RECOVERY_ROOT_OUT)/system_ext" \
-        "$(TARGET_RECOVERY_ROOT_OUT)/system_root"; \
+        "$(TARGET_RECOVERY_ROOT_OUT)/system_root" \
+        "$(TARGET_RECOVERY_ROOT_OUT)/usb_otg" \
+        "$(TARGET_RECOVERY_ROOT_OUT)/usb_otg_hisi" \
+        "$(TARGET_RECOVERY_ROOT_OUT)/usb_otg_hifi"; \
+    mkdir -p "$(TARGET_RECOVERY_ROOT_OUT)/system/bin/bootstrap"; \
+    ln -sf /system/bin/linker64 "$(TARGET_RECOVERY_ROOT_OUT)/system/bin/bootstrap/linker64"; \
+    if [ -f "$(DEVICE_PATH)/recovery-modern/recovery/root/sbin/blanc-diag-dump.sh" ]; then \
+        cp -f "$(DEVICE_PATH)/recovery-modern/recovery/root/sbin/blanc-diag-dump.sh" "$(TARGET_RECOVERY_ROOT_OUT)/system/bin/blanc-diag-dump.sh"; \
+        chmod 0755 "$(TARGET_RECOVERY_ROOT_OUT)/system/bin/blanc-diag-dump.sh"; \
+        ln -sf /system/bin/blanc-diag-dump.sh "$(TARGET_RECOVERY_ROOT_OUT)/sbin/blanc-diag-dump.sh"; \
+    fi; \
     ln -sf /tmp/fstab "$(TARGET_RECOVERY_ROOT_OUT)/system/etc/fstab"; \
     cd "$(TARGET_RECOVERY_ROOT_OUT)" && \
     find . -print | LC_ALL=C sort | sed 's|^\./||; /lib\/modules\//d' > ramdisk-files.txt && \

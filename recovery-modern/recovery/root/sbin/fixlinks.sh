@@ -16,3 +16,15 @@ for node in /dev/block/bootdevice/by-name/*_a; do
 	alias="${node%_a}"
 	[ -e "$alias" ] || ln -s "$node" "$alias"
 done
+
+# fastbootd opens /dev/block/by-name/<name> exclusively; bridge or mirror _a aliases there too.
+if [ ! -e /dev/block/by-name ] && [ -d /dev/block/bootdevice/by-name ]; then
+	ln -s /dev/block/bootdevice/by-name /dev/block/by-name
+fi
+if [ -d /dev/block/by-name ] && [ ! -L /dev/block/by-name ]; then
+	for node in /dev/block/by-name/*_a; do
+		[ -e "$node" ] || continue
+		alias="${node%_a}"
+		[ -e "$alias" ] || ln -s "$node" "$alias"
+	done
+fi
